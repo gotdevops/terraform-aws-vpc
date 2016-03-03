@@ -152,7 +152,7 @@ resource "aws_instance" "jump" {
 
 	connection {
 		type = "ssh"
-		user = "ec2-user"
+		user = "ubuntu"
 		private_key = "${var.aws_private_key}"
 	}
 
