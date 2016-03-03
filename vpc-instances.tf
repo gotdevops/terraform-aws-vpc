@@ -198,7 +198,8 @@ resource "aws_instance" "jump" {
 
 	provisioner "remote-exec" {
 		inline = [
-			"sudo yum update -y"
+			"sudo apt-get update",
+			"sudo apt-get upgrade"
 		]
 	}
 
