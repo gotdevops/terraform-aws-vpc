@@ -22,10 +22,10 @@ resource "aws_instance" "nat" {
 	}
 
 	tags {
-		Name ="nat-${var.site_env}"
-		Environment = "${var.site_env}"
+		Name ="nat-${var.site_environment}"
+		Environment = "${var.site_environment}"
 
-        FullRole = "${var.site_env}-nat"
+        FullRole = "${var.site_environment}-nat"
 		Role = "nat"
 	}
 
@@ -89,10 +89,10 @@ resource "aws_instance" "provision" {
 	}
 
 	tags {
-		Name ="provision-${var.site_env}"
-		Environment = "${var.site_env}"
+		Name ="provision-${var.site_environment}"
+		Environment = "${var.site_environment}"
 
-		FullRole = "${var.site_env}-provision"
+		FullRole = "${var.site_environment}-provision"
 		Role = "provision"
 	}
 
@@ -158,10 +158,10 @@ resource "aws_instance" "jump" {
 		delete_on_termination = true
 	}
 	tags {
-		Name ="jump-${var.site_env}"
-		Environment = "${var.site_env}"
+		Name ="jump-${var.site_environment}"
+		Environment = "${var.site_environment}"
 
-		FullRole = "${var.site_env}-jump"
+		FullRole = "${var.site_environment}-jump"
 		Role = "jump"
 	}
 

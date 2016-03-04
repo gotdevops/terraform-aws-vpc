@@ -33,7 +33,7 @@ variable "jump_access_cidr" {
 	default = "0.0.0.0/0" # use + to delimit more
 }
 
-variable "site_env" {
+variable "site_environment" {
 	default = "general"
 }
 
