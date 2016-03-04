@@ -33,6 +33,22 @@ variable "jump_access_cidr" {
 	default = "0.0.0.0/0" # use + to delimit more
 }
 
+variable "site_env" {
+	default = "general"
+}
+
+variable "nat_instance_type" {
+	default = "m1.small"
+}
+
+variable "provision_instance_type" {
+	default = "t2.small"
+}
+
+variable "jump_instance_type" {
+	default = "t2.micro"
+}
+
 variable "sleep_seconds" {
 	default = "90"
 }

@@ -4,23 +4,29 @@
 ############################
 
 resource "aws_instance" "nat" {
-	instance_type = "m1.small"
-	private_ip = "${var.vpc_cidr_prefix}.0.250"
-	source_dest_check = false				#important for nat
-	subnet_id = "${aws_subnet.dmz.id}"
-	vpc_security_group_ids = ["${aws_security_group.nat.id}"]
+	instance_type = "${var.nat_instance_type}"
 	ami = "${lookup(var.nat_amis, var.aws_region)}"
-	availability_zone = "${var.vpc_zone}"
 	key_name = "${var.aws_keypair_name}"
+
+	# required for nat - source_dest_check = false
+	source_dest_check = false
 	associate_public_ip_address = true
+
+	subnet_id = "${aws_subnet.dmz.id}"
+	private_ip = "${var.vpc_cidr_prefix}.0.250"
+
+	vpc_security_group_ids = ["${aws_security_group.nat.id}"]
 
 	root_block_device {
 		delete_on_termination = true
 	}
 
 	tags {
-		Name = "nat"
-		Layer = "nat"
+		Name ="nat-${var.site_env}"
+		Environment = "${var.site_env}"
+
+        FullRole = "${var.site_env}-nat"
+		Role = "nat"
 	}
 
 	provisioner "local-exec" {
@@ -66,22 +72,28 @@ resource "aws_instance" "nat" {
 
 resource "aws_instance" "provision" {
 	depends_on = ["aws_route_table.nat", "aws_instance.nat"]
-	instance_type = "t2.small"
-	private_ip = "${var.vpc_cidr_prefix}.96.7"
-	subnet_id = "${aws_subnet.provision.id}"
-	vpc_security_group_ids = ["${aws_security_group.ssh_base.id}", "${aws_security_group.provision.id}"]
+	instance_type = "${var.provision_instance_type}"
 	ami = "${lookup(var.ubuntu_amis, var.aws_region)}"
-	availability_zone = "${var.vpc_zone}"
 	key_name = "${var.aws_keypair_name}"
-	source_dest_check = true
+
+	subnet_id = "${aws_subnet.provision.id}"
+	private_ip = "${var.vpc_cidr_prefix}.96.7"
+
+	vpc_security_group_ids = [
+		"${aws_security_group.ssh_base.id}", 
+		"${aws_security_group.provision.id}"
+	]
 	
 	root_block_device {
 		delete_on_termination = true
 	}
 
 	tags {
-		Name = "provision"
-		Layer = "provision"
+		Name ="provision-${var.site_env}"
+		Environment = "${var.site_env}"
+
+		FullRole = "${var.site_env}-provision"
+		Role = "provision"
 	}
 
 	provisioner "local-exec" {
@@ -131,23 +143,26 @@ resource "aws_instance" "provision" {
 
 resource "aws_instance" "jump" {
 	depends_on = ["aws_internet_gateway.main"]
-	instance_type = "t2.micro"
-	private_ip = "${var.vpc_cidr_prefix}.0.7"
-	subnet_id = "${aws_subnet.dmz.id}"
-	vpc_security_group_ids = ["${aws_security_group.jump.id}"]
+	instance_type = "${var.jump_instance_type}"
 	ami = "${lookup(var.jump_amis, var.aws_region)}"
-	availability_zone = "${var.vpc_zone}"
-	source_dest_check = true
+	key_name = "${var.aws_keypair_name}" 
+
 	associate_public_ip_address = true
 
-	key_name = "${var.aws_keypair_name}" 
+	subnet_id = "${aws_subnet.dmz.id}"
+	private_ip = "${var.vpc_cidr_prefix}.0.7"
+
+	vpc_security_group_ids = ["${aws_security_group.jump.id}"]
 
 	root_block_device {
 		delete_on_termination = true
 	}
 	tags {
-		Name = "jump"
-		Layer = "jump"
+		Name ="jump-${var.site_env}"
+		Environment = "${var.site_env}"
+
+		FullRole = "${var.site_env}-jump"
+		Role = "jump"
 	}
 
 	connection {
@@ -201,7 +216,6 @@ resource "aws_instance" "jump" {
 			"sudo apt-get update"
 		]
 	}
-
 }
 
 
