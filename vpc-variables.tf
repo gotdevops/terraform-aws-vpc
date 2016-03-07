@@ -139,4 +139,8 @@ output "provision_ip" {
 	value = "${aws_instance.provision.private_ip}"
 }
 
+output "jump_dns" {
+	value = "${aws_route53_record.jump.fqdn}"
+}
+
 
