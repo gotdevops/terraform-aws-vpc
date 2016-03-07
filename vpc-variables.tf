@@ -7,8 +7,10 @@ variable "aws_vpc_name" {}
 variable "aws_keypair_name" {}
 variable "aws_private_key" {}
 
-#maybe prefix vpc_id on some root?
 variable "state_bucket" {}
+
+variable "dns_jump_domain" {}
+variable "dns_jump_zone_id" {}
 
 ############################
 # DEFAULTS
